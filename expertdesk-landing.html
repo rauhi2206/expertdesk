@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExpertDesk — Experten auf Abruf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0c0c0c;
+    --white: #fafaf8;
+    --accent: #e8f542;
+    --accent-dark: #c8d82a;
+    --gray-100: #f2f2ee;
+    --gray-200: #e0e0d8;
+    --gray-400: #9a9a92;
+    --gray-600: #5a5a54;
+    --gray-800: #2a2a26;
+    --teal: #1ad6b0;
+    --orange: #ff6b35;
+    --card-bg: #141414;
+    --radius: 16px;
+    --radius-sm: 8px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  h1,h2,h3,h4 { font-family: 'Syne', sans-serif; line-height: 1.1; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 5vw;
+    background: rgba(12,12,12,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em; }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 2.5rem; }
+  .nav-links a { color: var(--gray-400); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--accent); color: var(--black); font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 0.85rem; padding: 0.6rem 1.4rem;
+    border-radius: 100px; text-decoration: none; letter-spacing: 0.01em;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--accent-dark); transform: scale(1.03); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; padding: 8rem 5vw 5rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(232,245,66,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(26,214,176,0.05) 0%, transparent 50%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 820px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(232,245,66,0.1); border: 1px solid rgba(232,245,66,0.25);
+    color: var(--accent); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em;
+    padding: 0.35rem 1rem; border-radius: 100px; margin-bottom: 2rem;
+    text-transform: uppercase;
+  }
+  .hero-badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+  h1 {
+    font-size: clamp(2.8rem, 7vw, 5.5rem); font-weight: 800;
+    letter-spacing: -0.03em; margin-bottom: 1.5rem;
+    color: var(--white);
+  }
+  h1 .highlight { color: var(--accent); }
+  h1 .highlight-teal { color: var(--teal); }
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem); color: var(--gray-400);
+    max-width: 540px; margin-bottom: 3rem; font-weight: 300;
+    line-height: 1.7;
+  }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 4rem; }
+  .btn-primary {
+    background: var(--accent); color: var(--black);
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
+    padding: 0.85rem 2rem; border-radius: 100px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.15s, background 0.2s;
+  }
+  .btn-primary:hover { transform: scale(1.03); background: var(--accent-dark); }
+  .btn-secondary {
+    border: 1px solid rgba(255,255,255,0.15); color: var(--white);
+    font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.95rem;
+    padding: 0.85rem 2rem; border-radius: 100px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.05); }
+  .hero-stats { display: flex; gap: 3rem; flex-wrap: wrap; }
+  .stat-item .stat-num {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2rem;
+    color: var(--white); letter-spacing: -0.02em;
+  }
+  .stat-item .stat-num span { color: var(--accent); }
+  .stat-item .stat-label { font-size: 0.82rem; color: var(--gray-400); margin-top: 2px; }
+
+  /* FLOATING TICKET PREVIEW */
+  .hero-visual {
+    position: absolute; right: 5vw; top: 50%; transform: translateY(-50%);
+    z-index: 1; width: min(400px, 38vw);
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .ticket-card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius); padding: 1.25rem;
+    animation: float 4s ease-in-out infinite;
+  }
+  .ticket-card:nth-child(2) { animation-delay: -2s; margin-left: 2rem; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .ticket-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+  .ticket-tag {
+    font-size: 0.7rem; font-weight: 600; padding: 0.25rem 0.7rem;
+    border-radius: 100px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .tag-dev { background: rgba(26,214,176,0.15); color: var(--teal); }
+  .tag-design { background: rgba(232,245,66,0.15); color: var(--accent); }
+  .tag-urgent { background: rgba(255,107,53,0.15); color: var(--orange); }
+  .ticket-diff { font-size: 0.72rem; color: var(--gray-400); }
+  .ticket-title { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .ticket-desc { font-size: 0.78rem; color: var(--gray-400); margin-bottom: 1rem; line-height: 1.5; }
+  .ticket-footer { display: flex; justify-content: space-between; align-items: center; }
+  .ticket-meta { font-size: 0.72rem; color: var(--gray-600); }
+  .ticket-responses {
+    font-size: 0.72rem; color: var(--teal); font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .ai-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.7rem; background: rgba(26,214,176,0.1);
+    border: 1px solid rgba(26,214,176,0.2); color: var(--teal);
+    padding: 0.2rem 0.6rem; border-radius: 100px; margin-top: 0.5rem;
+  }
+
+  /* SECTION STYLES */
+  section { padding: 6rem 5vw; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 1rem;
+  }
+  .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; }
+  .section-sub { font-size: 1.05rem; color: var(--gray-400); max-width: 520px; line-height: 1.7; }
+
+  /* HOW IT WORKS */
+  .how { background: var(--gray-800); }
+  .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2px; margin-top: 4rem; }
+  .step {
+    background: #1a1a18; padding: 2.5rem 2rem; position: relative;
+    overflow: hidden;
+  }
+  .step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .step:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+  .step-num {
+    font-family: 'Syne', sans-serif; font-size: 4rem; font-weight: 800;
+    color: rgba(232,245,66,0.08); position: absolute; top: 1rem; right: 1.5rem;
+    line-height: 1; letter-spacing: -0.05em;
+  }
+  .step-icon {
+    width: 44px; height: 44px; background: rgba(232,245,66,0.1);
+    border-radius: var(--radius-sm); display: flex; align-items: center;
+    justify-content: center; font-size: 1.3rem; margin-bottom: 1.25rem;
+  }
+  .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .step p { font-size: 0.85rem; color: var(--gray-400); line-height: 1.6; }
+
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 4rem; }
+  .feature-card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius); padding: 2rem;
+    transition: border-color 0.25s, transform 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .feature-card::before {
+    content: ''; position: absolute; inset: 0; opacity: 0;
+    background: radial-gradient(ellipse at top left, rgba(232,245,66,0.05), transparent 60%);
+    transition: opacity 0.3s;
+  }
+  .feature-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    width: 48px; height: 48px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin-bottom: 1.25rem;
+  }
+  .fi-yellow { background: rgba(232,245,66,0.12); }
+  .fi-teal { background: rgba(26,214,176,0.12); }
+  .fi-orange { background: rgba(255,107,53,0.12); }
+  .fi-purple { background: rgba(167,139,250,0.12); }
+  .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .feature-card p { font-size: 0.85rem; color: var(--gray-400); line-height: 1.6; }
+  .feature-tag {
+    display: inline-block; font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: rgba(26,214,176,0.1); color: var(--teal);
+    padding: 0.2rem 0.6rem; border-radius: 100px; margin-top: 1rem;
+  }
+
+  /* RANKING SHOWCASE */
+  .ranking-section { background: #0e0e0e; }
+  .ranking-demo {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius); padding: 2rem; margin-top: 3rem; max-width: 600px;
+  }
+  .expert-row {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .expert-row:last-child { border-bottom: none; }
+  .expert-rank { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--gray-600); width: 24px; }
+  .expert-rank.gold { color: #f0b90b; }
+  .expert-rank.silver { color: #a8b5c0; }
+  .expert-rank.bronze { color: #cd7f32; }
+  .expert-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem;
+  }
+  .av1 { background: rgba(232,245,66,0.2); color: var(--accent); }
+  .av2 { background: rgba(26,214,176,0.2); color: var(--teal); }
+  .av3 { background: rgba(255,107,53,0.2); color: var(--orange); }
+  .av4 { background: rgba(167,139,250,0.2); color: #a78bfa; }
+  .expert-info { flex: 1; }
+  .expert-name { font-weight: 600; font-size: 0.9rem; }
+  .expert-skill { font-size: 0.75rem; color: var(--gray-400); }
+  .expert-stats { display: flex; gap: 1.5rem; }
+  .expert-stat { text-align: center; }
+  .expert-stat .val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
+  .expert-stat .lbl { font-size: 0.65rem; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.06em; }
+  .stars { color: #f0b90b; font-size: 0.8rem; }
+
+  /* PRICING */
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 4rem; }
+  .price-card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius); padding: 2.5rem 2rem; position: relative;
+  }
+  .price-card.featured {
+    border-color: var(--accent); background: #141408;
+  }
+  .price-popular {
+    position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: var(--black);
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.7rem;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.3rem 1.2rem; border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  }
+  .price-plan { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 0.5rem; }
+  .price-amount {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 3rem;
+    letter-spacing: -0.03em; margin-bottom: 0.25rem;
+  }
+  .price-amount sup { font-size: 1.2rem; vertical-align: super; }
+  .price-note { font-size: 0.78rem; color: var(--gray-400); margin-bottom: 2rem; }
+  .price-free-note { font-size: 0.8rem; color: var(--teal); font-weight: 600; margin-bottom: 2rem; }
+  .price-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+  .price-features li { font-size: 0.85rem; display: flex; align-items: flex-start; gap: 8px; color: var(--gray-400); }
+  .price-features li::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; }
+  .price-features li.muted::before { content: '—'; color: var(--gray-600); }
+  .price-features li.muted { color: var(--gray-600); }
+  .btn-price {
+    display: block; text-align: center; padding: 0.85rem; border-radius: 100px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .btn-price-primary { background: var(--accent); color: var(--black); }
+  .btn-price-primary:hover { background: var(--accent-dark); }
+  .btn-price-outline {
+    border: 1px solid rgba(255,255,255,0.15); color: var(--white);
+  }
+  .btn-price-outline:hover { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.05); }
+
+  /* TESTIMONIALS */
+  .testimonials { background: #0e0e0e; }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .testimonial-card {
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius); padding: 2rem;
+  }
+  .testimonial-stars { color: #f0b90b; margin-bottom: 1rem; font-size: 0.9rem; }
+  .testimonial-text { font-size: 0.9rem; color: var(--gray-400); line-height: 1.7; font-style: italic; margin-bottom: 1.5rem; }
+  .testimonial-author { display: flex; align-items: center; gap: 10px; }
+  .testimonial-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.75rem;
+  }
+  .ta1 { background: rgba(232,245,66,0.2); color: var(--accent); }
+  .ta2 { background: rgba(26,214,176,0.2); color: var(--teal); }
+  .ta3 { background: rgba(255,107,53,0.2); color: var(--orange); }
+  .testimonial-name { font-weight: 600; font-size: 0.85rem; }
+  .testimonial-role { font-size: 0.75rem; color: var(--gray-600); }
+
+  /* CTA SECTION */
+  .cta-section {
+    background: var(--accent); padding: 6rem 5vw;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.05) 0%, transparent 70%);
+  }
+  .cta-section h2 { font-size: clamp(2rem, 5vw, 4rem); color: var(--black); letter-spacing: -0.03em; margin-bottom: 1rem; position: relative; }
+  .cta-section p { font-size: 1.1rem; color: rgba(0,0,0,0.6); margin-bottom: 2.5rem; position: relative; }
+  .cta-section .btn-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--black); color: var(--white);
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+    padding: 1rem 2.5rem; border-radius: 100px; text-decoration: none;
+    transition: transform 0.15s, background 0.2s;
+    position: relative;
+  }
+  .cta-section .btn-cta:hover { background: #1a1a1a; transform: scale(1.04); }
+  .cta-note { font-size: 0.8rem; color: rgba(0,0,0,0.45); margin-top: 1rem; position: relative; }
+
+  /* FOOTER */
+  footer {
+    background: #080808; border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 3rem 5vw; display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; }
+  .footer-logo span { color: var(--accent); }
+  .footer-links { display: flex; gap: 2rem; }
+  .footer-links a { color: var(--gray-600); font-size: 0.82rem; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--gray-400); }
+  .footer-copy { color: var(--gray-600); font-size: 0.78rem; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero-visual { display: none; }
+    h1 { font-size: 2.8rem; }
+    .step:first-child, .step:last-child { border-radius: 0; }
+    .steps-grid { gap: 1px; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 1rem 4vw; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 4vw 4rem; }
+    .hero-stats { gap: 2rem; }
+    section { padding: 4rem 4vw; }
+  }
+
+  /* SCROLL ANIMATIONS */
+  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Expert<span>Desk</span></div>
+  <div class="nav-links">
+    <a href="#how">Wie es funktioniert</a>
+    <a href="#features">Features</a>
+    <a href="#ranking">Ranking</a>
+    <a href="#pricing">Preise</a>
+  </div>
+  <a href="https://tally.so/r/RGRDxQ" target="_blank" class="nav-cta">Kostenlos starten →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      KI-gestützte Expertenplattform
+    </div>
+    <h1>
+      Probleme posten.<br>
+      <span class="highlight">Experten</span> lösen.<br>
+      <span class="highlight-teal">Fertig.</span>
+    </h1>
+    <p class="hero-sub">
+      Firmen legen ein Ticket an — unsere KI analysiert das Problem automatisch.
+      Qualifizierte Freelancer melden sich. Keine langen Suchen, keine Headhunter.
+    </p>
+    <div class="hero-ctas">
+      <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-primary">2 Monate gratis testen →</a>
+      <a href="#how" class="btn-secondary">So funktioniert's</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">2<span>h</span></div>
+        <div class="stat-label">Ø Zeit bis erste Antwort</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num"><span>€</span>0</div>
+        <div class="stat-label">Kosten in den ersten 2 Monaten</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">98<span>%</span></div>
+        <div class="stat-label">Zufriedenheitsrate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Tickets -->
+  <div class="hero-visual">
+    <div class="ticket-card">
+      <div class="ticket-header">
+        <span class="ticket-tag tag-dev">Development</span>
+        <span class="ticket-diff">⚡ Schwierig</span>
+      </div>
+      <div class="ticket-title">React App stürzt bei großen Datensätzen ab</div>
+      <div class="ticket-desc">Memory Leak bei virtualisierter Liste mit 10k+ Einträgen. Profiler zeigt...</div>
+      <div class="ai-badge">✦ KI analysiert — 3 Skills erkannt</div>
+      <div class="ticket-footer">
+        <span class="ticket-meta">vor 12 min · München GmbH</span>
+        <span class="ticket-responses">● 4 Antworten</span>
+      </div>
+    </div>
+    <div class="ticket-card">
+      <div class="ticket-header">
+        <span class="ticket-tag tag-design">Design</span>
+        <span class="ticket-diff">☀ Mittel</span>
+      </div>
+      <div class="ticket-title">UI Redesign Landing Page</div>
+      <div class="ticket-desc">Conversion-Rate verbessern, Mobile-First, neue Brandfarben integrieren...</div>
+      <div class="ticket-footer">
+        <span class="ticket-meta">vor 34 min · Startup Berlin</span>
+        <span class="ticket-responses">● 7 Antworten</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-label">Ablauf</div>
+  <h2 class="section-title">In 4 Schritten zur Lösung</h2>
+  <p class="section-sub">Von der Problembeschreibung bis zur fertigen Lösung — alles auf einer Plattform.</p>
+  <div class="steps-grid fade-up">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">📝</div>
+      <h3>Ticket anlegen</h3>
+      <p>Beschreibt euer Problem kurz — unsere KI analysiert es sofort und befüllt Kategorie, Schwierigkeitsgrad und benötigte Skills automatisch.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">🤖</div>
+      <h3>KI-Matching</h3>
+      <p>Das System benachrichtigt automatisch die passenden Experten basierend auf Skills, Verfügbarkeit und bisherigen Bewertungen.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">💬</div>
+      <h3>Direkte Kommunikation</h3>
+      <p>Experten melden sich im Ticket. Chat, Dateiupload, alles direkt auf der Plattform. Bezahlung wird privat vereinbart.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-icon">⭐</div>
+      <h3>Bewerten & Abschließen</h3>
+      <p>Nach Abschluss bewertet ihr den Experten. Das verbessert sein Ranking und hilft anderen Firmen bei der Auswahl.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="background: var(--black);">
+  <div class="section-label">Features</div>
+  <h2 class="section-title">Alles was ihr braucht</h2>
+  <p class="section-sub">Gebaut für Firmen die schnell Hilfe brauchen — und Experten die effizient Aufträge finden.</p>
+  <div class="features-grid fade-up">
+    <div class="feature-card">
+      <div class="feature-icon fi-teal">🤖</div>
+      <h3>KI-Ticket-Analyse</h3>
+      <p>Einfach das Problem beschreiben — die KI (via n8n + OpenAI) analysiert automatisch: Kategorie, Schwierigkeitsgrad, benötigte Skills, geschätzte Stunden.</p>
+      <span class="feature-tag">n8n Powered</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-yellow">🏆</div>
+      <h3>Experten-Ranking</h3>
+      <p>Transparentes Ranking basierend auf Antwortzeit, Bewertungen, Abschlussrate und Erfahrung. Bronze bis Platin — auf einen Blick sichtbar.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-orange">⚡</div>
+      <h3>Quick Response Modus</h3>
+      <p>Dringendes Problem? Markiert euer Ticket als "Urgent" — Experten mit aktiviertem Quick-Mode werden sofort per Push benachrichtigt.</p>
+      <span class="feature-tag">Exklusiv</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-purple">📈</div>
+      <h3>Schwierigkeitsgrad-System</h3>
+      <p>Tickets von Junior bis Expert. Anfänger sammeln Erfahrung bei einfacheren Aufgaben und schalten sich systematisch zu komplexeren vor.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-teal">💬</div>
+      <h3>Ticket-Kommunikation</h3>
+      <p>Chat direkt am Ticket. Dateiupload, Screenshots, Code-Snippets. Keine externen Tools — alles an einem Ort.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-yellow">📚</div>
+      <h3>Lösungs-Bibliothek</h3>
+      <p>Abgeschlossene Tickets werden (anonym) öffentlich. Firmen sehen: "Dieses Problem wurde bereits gelöst" — mit konkretem Experten-Vorschlag.</p>
+      <span class="feature-tag">Einzigartig</span>
+    </div>
+  </div>
+</section>
+
+<!-- RANKING SECTION -->
+<section class="ranking-section" id="ranking">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; flex-wrap: wrap;">
+    <div class="fade-up">
+      <div class="section-label">Ranking-System</div>
+      <h2 class="section-title">Die besten Experten sofort erkennbar</h2>
+      <p class="section-sub" style="margin-bottom: 2rem;">
+        Jeder Experte hat ein öffentliches Profil mit Bewertungen, Antwortzeiten und Abschlussrate.
+        Für Anfänger ein klarer Weg nach oben — für Firmen maximale Transparenz.
+      </p>
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        <div>
+          <div style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--accent);">4.9/5</div>
+          <div style="font-size: 0.8rem; color: var(--gray-400);">Ø Bewertung</div>
+        </div>
+        <div>
+          <div style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--teal);">&lt;2h</div>
+          <div style="font-size: 0.8rem; color: var(--gray-400);">Top-Experten Antwortzeit</div>
+        </div>
+        <div>
+          <div style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--orange);">97%</div>
+          <div style="font-size: 0.8rem; color: var(--gray-400);">Abschlussrate (Platin)</div>
+        </div>
+      </div>
+    </div>
+    <div class="fade-up">
+      <div class="ranking-demo">
+        <div style="font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-600); margin-bottom: 0.5rem;">🏆 Experte des Monats</div>
+        <div class="expert-row">
+          <div class="expert-rank gold">1</div>
+          <div class="expert-avatar av1">MK</div>
+          <div class="expert-info">
+            <div class="expert-name">Max K. <span style="font-size:0.7rem; background: rgba(240,185,11,0.15); color: #f0b90b; padding: 1px 6px; border-radius: 4px; font-weight: 600;">PLATIN</span></div>
+            <div class="expert-skill">Full-Stack Dev · React · Node.js</div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="expert-stats">
+            <div class="expert-stat"><div class="val" style="color:var(--teal)">47min</div><div class="lbl">Antwort</div></div>
+            <div class="expert-stat"><div class="val">4.98</div><div class="lbl">Rating</div></div>
+          </div>
+        </div>
+        <div class="expert-row">
+          <div class="expert-rank silver">2</div>
+          <div class="expert-avatar av2">SL</div>
+          <div class="expert-info">
+            <div class="expert-name">Sara L. <span style="font-size:0.7rem; background: rgba(168,181,192,0.15); color: #a8b5c0; padding: 1px 6px; border-radius: 4px; font-weight: 600;">GOLD</span></div>
+            <div class="expert-skill">UI/UX Design · Figma</div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="expert-stats">
+            <div class="expert-stat"><div class="val" style="color:var(--teal)">1.2h</div><div class="lbl">Antwort</div></div>
+            <div class="expert-stat"><div class="val">4.95</div><div class="lbl">Rating</div></div>
+          </div>
+        </div>
+        <div class="expert-row">
+          <div class="expert-rank bronze">3</div>
+          <div class="expert-avatar av3">TM</div>
+          <div class="expert-info">
+            <div class="expert-name">Tom M. <span style="font-size:0.7rem; background: rgba(205,127,50,0.15); color: #cd7f32; padding: 1px 6px; border-radius: 4px; font-weight: 600;">SILBER</span></div>
+            <div class="expert-skill">DevOps · AWS · Docker</div>
+            <div class="stars">★★★★½</div>
+          </div>
+          <div class="expert-stats">
+            <div class="expert-stat"><div class="val" style="color:var(--teal)">1.8h</div><div class="lbl">Antwort</div></div>
+            <div class="expert-stat"><div class="val">4.87</div><div class="lbl">Rating</div></div>
+          </div>
+        </div>
+        <div class="expert-row">
+          <div class="expert-rank" style="color: var(--gray-600)">4</div>
+          <div class="expert-avatar av4">JN</div>
+          <div class="expert-info">
+            <div class="expert-name">Julia N. <span style="font-size:0.7rem; background: rgba(26,214,176,0.1); color: var(--teal); padding: 1px 6px; border-radius: 4px; font-weight: 600;">BRONZE</span></div>
+            <div class="expert-skill">Marketing · SEO · Content</div>
+            <div class="stars">★★★★½</div>
+          </div>
+          <div class="expert-stats">
+            <div class="expert-stat"><div class="val" style="color:var(--teal)">2.1h</div><div class="lbl">Antwort</div></div>
+            <div class="expert-stat"><div class="val">4.82</div><div class="lbl">Rating</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background: var(--black);">
+  <div class="section-label">Preise</div>
+  <h2 class="section-title">Transparent & Fair</h2>
+  <p class="section-sub">2 Monate komplett kostenlos. Danach wählt ihr den passenden Plan.</p>
+  <div class="pricing-grid fade-up">
+    <div class="price-card">
+      <div class="price-plan">Free Trial</div>
+      <div class="price-amount"><sup>€</sup>0</div>
+      <div class="price-free-note">✦ 2 Monate komplett gratis</div>
+      <ul class="price-features">
+        <li>5 Tickets pro Monat</li>
+        <li>KI-Ticket-Analyse</li>
+        <li>Basis-Ranking sichtbar</li>
+        <li>Ticket-Chat</li>
+        <li class="muted">Quick Response</li>
+        <li class="muted">Unbegrenzte Tickets</li>
+      </ul>
+      <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-price btn-price-outline">Gratis starten</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-popular">Beliebteste Wahl</div>
+      <div class="price-plan">Experten Pro</div>
+      <div class="price-amount"><sup>€</sup>15</div>
+      <div class="price-note">pro Monat · monatlich kündbar</div>
+      <ul class="price-features">
+        <li>Unbegrenzte Tickets</li>
+        <li>KI-Matching & Benachrichtigungen</li>
+        <li>Quick Response Modus</li>
+        <li>Proof of Work Portfolio</li>
+        <li>Priorität im Ranking</li>
+        <li>Analytics Dashboard</li>
+      </ul>
+      <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-price btn-price-primary">Jetzt starten →</a>
+    </div>
+    <div class="price-card">
+      <div class="price-plan">Business (Firmen)</div>
+      <div class="price-amount"><sup>€</sup>15</div>
+      <div class="price-note">pro Monat · monatlich kündbar</div>
+      <ul class="price-features">
+        <li>Unbegrenzte Tickets</li>
+        <li>KI-Analyse & Auto-Fill</li>
+        <li>Urgent-Ticket Markierung</li>
+        <li>Team-Zugang (3 Nutzer)</li>
+        <li>Ausgaben-Tracking</li>
+        <li>Prioritäts-Support</li>
+      </ul>
+      <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-price btn-price-outline">Für Firmen starten</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-label">Stimmen</div>
+  <h2 class="section-title">Was unsere Nutzer sagen</h2>
+  <div class="testimonials-grid fade-up">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Wir haben 3 Stunden nach dem ersten Ticket schon eine Lösung gehabt. Früher hat das eine Woche Freelancer-Suche gekostet."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar ta1">AK</div>
+        <div>
+          <div class="testimonial-name">Andreas K.</div>
+          <div class="testimonial-role">CTO · TechStartup Berlin</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Als Freelancer bekomme ich jeden Monat 4–6 neue Aufträge ohne selbst akquirieren zu müssen. ExpertDesk ist mein bester Kanal."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar ta2">ML</div>
+        <div>
+          <div class="testimonial-name">Maria L.</div>
+          <div class="testimonial-role">Freelance Designerin · Hamburg</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Das Ranking-System hat mir geholfen schnell sichtbar zu werden. Nach 2 Monaten war ich auf Platz 5 — als kompletter Einsteiger."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar ta3">JP</div>
+        <div>
+          <div class="testimonial-name">Jan P.</div>
+          <div class="testimonial-role">Junior Dev · Köln</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Bereit loszulegen?</h2>
+  <p>2 Monate kostenlos. Keine Kreditkarte. Kündigung jederzeit.</p>
+  <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-cta">Jetzt kostenlos starten →</a>
+  <div class="cta-note">Bereits 500+ Experten & 120 Firmen auf der Warteliste</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Expert<span>Desk</span></div>
+  <div class="footer-links">
+    <a href="#">AGB</a>
+    <a href="#">Datenschutz</a>
+    <a href="#">Impressum</a>
+    <a href="#">Kontakt</a>
+  </div>
+  <div class="footer-copy">© 2025 ExpertDesk. Alle Rechte vorbehalten.</div>
+</footer>
+
+<script>
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
