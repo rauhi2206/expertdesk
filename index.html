@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solvd — Dein Problem. Gelöst.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indigo: #4f46e5;
+    --indigo-dark: #3730a3;
+    --indigo-light: #eef2ff;
+    --indigo-mid: #c7d2fe;
+    --black: #0f0f0e;
+    --gray-900: #1a1a18;
+    --gray-700: #374151;
+    --gray-500: #6b7280;
+    --gray-400: #9ca3af;
+    --gray-200: #e5e7eb;
+    --gray-100: #f3f4f6;
+    --gray-50: #f9fafb;
+    --white: #ffffff;
+    --teal: #0d9488;
+    --teal-light: #ccfbf1;
+    --orange: #ea580c;
+    --orange-light: #ffedd5;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.05);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--white);
+    color: var(--gray-700);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 5vw;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .logo { font-weight: 800; font-size: 1.3rem; color: var(--black); letter-spacing: -0.03em; }
+  .logo span { color: var(--indigo); }
+  .nav-links { display: flex; align-items: center; gap: 2.5rem; }
+  .nav-links a { color: var(--gray-500); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--black); }
+  .nav-cta {
+    background: var(--indigo); color: var(--white);
+    font-weight: 600; font-size: 0.85rem; padding: 0.55rem 1.3rem;
+    border-radius: var(--radius); text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 1px 2px rgba(79,70,229,0.3);
+  }
+  .nav-cta:hover { background: var(--indigo-dark); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; padding: 8rem 5vw 5rem;
+    position: relative; background: var(--white);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 100%;
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, #eef2ff 0%, transparent 70%);
+    z-index: 0;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 680px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--indigo-light); border: 1px solid var(--indigo-mid);
+    color: var(--indigo); font-size: 0.78rem; font-weight: 600;
+    padding: 0.4rem 1rem; border-radius: 100px; margin-bottom: 2rem;
+  }
+  .badge-dot { width: 6px; height: 6px; background: var(--indigo); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.5)} }
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800;
+    letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.5rem;
+    color: var(--black);
+  }
+  h1 .highlight { color: var(--indigo); }
+  .hero-sub {
+    font-size: clamp(1rem, 1.8vw, 1.15rem); color: var(--gray-500);
+    max-width: 500px; margin-bottom: 2.5rem; font-weight: 400; line-height: 1.7;
+  }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+  .btn-primary {
+    background: var(--indigo); color: var(--white);
+    font-weight: 700; font-size: 0.95rem; padding: 0.85rem 2rem;
+    border-radius: var(--radius); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    box-shadow: 0 4px 14px rgba(79,70,229,0.35);
+    transition: transform 0.15s, background 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); background: var(--indigo-dark); box-shadow: 0 6px 20px rgba(79,70,229,0.4); }
+  .btn-secondary {
+    border: 1.5px solid var(--gray-200); color: var(--gray-700);
+    font-weight: 600; font-size: 0.95rem; padding: 0.85rem 2rem;
+    border-radius: var(--radius); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--gray-400); background: var(--gray-50); }
+  .hero-trust {
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    font-size: 0.82rem; color: var(--gray-400);
+  }
+  .trust-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--gray-100); color: var(--gray-700);
+    padding: 0.3rem 0.8rem; border-radius: 100px; font-size: 0.78rem; font-weight: 500;
+  }
+  .trust-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot-green { background: var(--green); }
+  .dot-indigo { background: var(--indigo); }
+  .dot-orange { background: var(--orange); }
+
+  /* FLOATING CARDS */
+  .hero-visual {
+    position: absolute; right: 5vw; top: 50%; transform: translateY(-50%);
+    width: min(380px, 36vw); display: flex; flex-direction: column; gap: 12px;
+  }
+  .ticket-card {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius); padding: 1.1rem;
+    box-shadow: var(--shadow-lg);
+    animation: floatCard 4s ease-in-out infinite;
+  }
+  .ticket-card:nth-child(2) { animation-delay: -2s; margin-left: 1.5rem; }
+  @keyframes floatCard { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .ticket-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .ticket-tag {
+    font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.65rem;
+    border-radius: 100px; letter-spacing: 0.04em;
+  }
+  .tag-dev { background: var(--indigo-light); color: var(--indigo); }
+  .tag-design { background: var(--orange-light); color: var(--orange); }
+  .tag-level { font-size: 0.68rem; color: var(--gray-400); font-weight: 500; }
+  .ticket-title { font-size: 0.85rem; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+  .ticket-desc { font-size: 0.75rem; color: var(--gray-500); margin-bottom: 10px; line-height: 1.5; }
+  .ticket-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .ticket-meta { font-size: 0.7rem; color: var(--gray-400); }
+  .ticket-status {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 0.7rem; color: var(--teal); font-weight: 600;
+  }
+  .status-dot { width: 5px; height: 5px; background: var(--teal); border-radius: 50%; }
+  .ki-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--indigo-light); color: var(--indigo);
+    font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.6rem;
+    border-radius: 100px; margin-top: 6px;
+  }
+
+  /* HOW IT WORKS */
+  .how { background: var(--gray-50); padding: 6rem 5vw; border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200); }
+  .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--indigo); margin-bottom: 0.75rem; }
+  .section-title { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; letter-spacing: -0.02em; color: var(--black); margin-bottom: 0.75rem; }
+  .section-sub { font-size: 1rem; color: var(--gray-500); max-width: 480px; line-height: 1.7; margin-bottom: 3.5rem; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5px; background: var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; }
+  .step { background: var(--white); padding: 2rem 1.75rem; position: relative; }
+  .step-num { font-size: 0.7rem; font-weight: 700; color: var(--indigo); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+  .step-icon { width: 40px; height: 40px; background: var(--indigo-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 1rem; }
+  .step h3 { font-size: 1rem; font-weight: 700; color: var(--black); margin-bottom: 0.5rem; }
+  .step p { font-size: 0.82rem; color: var(--gray-500); line-height: 1.6; }
+
+  /* FEATURES */
+  .features { padding: 6rem 5vw; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 3.5rem; }
+  .feature-card {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius); padding: 1.75rem;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .feature-card:hover { border-color: var(--indigo-mid); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .feature-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 1rem; }
+  .fi-indigo { background: var(--indigo-light); }
+  .fi-teal { background: var(--teal-light); }
+  .fi-orange { background: var(--orange-light); }
+  .fi-green { background: var(--green-light); }
+  .feature-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--black); margin-bottom: 0.5rem; }
+  .feature-card p { font-size: 0.82rem; color: var(--gray-500); line-height: 1.6; }
+  .feature-new {
+    display: inline-block; font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: var(--indigo-light); color: var(--indigo);
+    padding: 0.15rem 0.55rem; border-radius: 100px; margin-top: 0.75rem;
+  }
+
+  /* FOR WHO */
+  .forwho { background: var(--gray-50); padding: 6rem 5vw; border-top: 1px solid var(--gray-200); }
+  .forwho-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+  .forwho-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 2.5rem 2rem; }
+  .forwho-card.highlighted { border-color: var(--indigo); background: var(--indigo-light); }
+  .forwho-emoji { font-size: 2rem; margin-bottom: 1rem; }
+  .forwho-card h3 { font-size: 1.2rem; font-weight: 800; color: var(--black); margin-bottom: 0.75rem; }
+  .forwho-card p { font-size: 0.85rem; color: var(--gray-500); line-height: 1.7; margin-bottom: 1.25rem; }
+  .forwho-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .forwho-list li { font-size: 0.85rem; color: var(--gray-700); display: flex; align-items: flex-start; gap: 8px; }
+  .forwho-list li::before { content: '✓'; color: var(--indigo); font-weight: 700; flex-shrink: 0; }
+
+  /* PRICING */
+  .pricing { padding: 6rem 5vw; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-top: 3.5rem; }
+  .price-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 2rem 1.75rem; position: relative; }
+  .price-card.featured { border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(79,70,229,0.08); }
+  .price-popular { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: var(--indigo); color: var(--white); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.25rem 1rem; border-radius: 0 0 8px 8px; }
+  .price-plan { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 0.5rem; }
+  .price-amount { font-size: 2.8rem; font-weight: 800; color: var(--black); letter-spacing: -0.03em; line-height: 1; margin-bottom: 0.25rem; }
+  .price-amount sup { font-size: 1.1rem; vertical-align: super; }
+  .price-period { font-size: 0.78rem; color: var(--gray-400); margin-bottom: 0.5rem; }
+  .price-free { font-size: 0.8rem; color: var(--green); font-weight: 600; margin-bottom: 1.5rem; }
+  .price-list { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.75rem; }
+  .price-list li { font-size: 0.83rem; color: var(--gray-500); display: flex; align-items: flex-start; gap: 8px; }
+  .price-list li::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; }
+  .price-list li.off::before { content: '—'; color: var(--gray-300); }
+  .price-list li.off { color: var(--gray-300); }
+  .btn-price { display: block; text-align: center; padding: 0.8rem; border-radius: var(--radius); font-weight: 700; font-size: 0.88rem; text-decoration: none; transition: all 0.2s; }
+  .btn-price-main { background: var(--indigo); color: var(--white); box-shadow: 0 2px 8px rgba(79,70,229,0.3); }
+  .btn-price-main:hover { background: var(--indigo-dark); }
+  .btn-price-outline { border: 1.5px solid var(--gray-200); color: var(--gray-700); }
+  .btn-price-outline:hover { border-color: var(--gray-400); background: var(--gray-50); }
+
+  /* FAQ */
+  .faq { background: var(--gray-50); padding: 6rem 5vw; border-top: 1px solid var(--gray-200); }
+  .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 3rem; max-width: 900px; }
+  .faq-item { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1.5rem; }
+  .faq-item h4 { font-size: 0.9rem; font-weight: 700; color: var(--black); margin-bottom: 0.5rem; }
+  .faq-item p { font-size: 0.82rem; color: var(--gray-500); line-height: 1.6; }
+
+  /* CTA */
+  .cta-section { background: var(--indigo); padding: 6rem 5vw; text-align: center; position: relative; overflow: hidden; }
+  .cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(255,255,255,0.06) 0%, transparent 70%); }
+  .cta-section h2 { font-size: clamp(2rem, 4vw, 3.5rem); color: var(--white); letter-spacing: -0.03em; margin-bottom: 1rem; position: relative; font-weight: 800; }
+  .cta-section p { font-size: 1rem; color: rgba(255,255,255,0.7); margin-bottom: 2.5rem; position: relative; }
+  .btn-cta-white { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--indigo); font-weight: 700; font-size: 0.95rem; padding: 0.9rem 2.2rem; border-radius: var(--radius); text-decoration: none; transition: transform 0.15s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.15); position: relative; }
+  .btn-cta-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .cta-note { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 1rem; position: relative; }
+
+  /* FOOTER */
+  footer { background: var(--black); padding: 2.5rem 5vw; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-logo { font-weight: 800; font-size: 1.1rem; color: var(--white); }
+  .footer-logo span { color: var(--indigo-mid); }
+  .footer-links { display: flex; gap: 2rem; }
+  .footer-links a { color: var(--gray-500); font-size: 0.8rem; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--gray-400); }
+  .footer-copy { color: var(--gray-500); font-size: 0.75rem; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero-visual { display: none; }
+    .forwho-grid { grid-template-columns: 1fr; }
+    .faq-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .hero { padding: 7rem 4vw 4rem; }
+    section, .how, .features, .forwho, .pricing, .faq { padding: 4rem 4vw; }
+    .steps { gap: 1px; }
+  }
+
+  /* ANIMATIONS */
+  .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Solvd<span>.</span></div>
+  <div class="nav-links">
+    <a href="#how">Wie es funktioniert</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Preise</a>
+  </div>
+  <a href="https://tally.so/r/RGRDxQ" target="_blank" class="nav-cta">Warteliste beitreten →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Gerade in Entwicklung — Warteliste offen
+    </div>
+    <h1>
+      Dein Problem.<br>
+      <span class="highlight">Gelöst.</span>
+    </h1>
+    <p class="hero-sub">
+      Firma postet ein Ticket — die KI analysiert es sofort und findet den passenden Experten automatisch. Kein Suchen, kein Headhunter, keine Agentur.
+    </p>
+    <div class="hero-ctas">
+      <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-primary">Auf Warteliste eintragen →</a>
+      <a href="#how" class="btn-secondary">Wie es funktioniert</a>
+    </div>
+    <div class="hero-trust">
+      <span>Jetzt in Entwicklung:</span>
+      <span class="trust-pill"><span class="dot dot-indigo"></span> KI-Analyse</span>
+      <span class="trust-pill"><span class="dot dot-green"></span> Ranking-System</span>
+      <span class="trust-pill"><span class="dot dot-orange"></span> Live-Chat</span>
+    </div>
+  </div>
+
+  <!-- Floating Tickets -->
+  <div class="hero-visual">
+    <div class="ticket-card">
+      <div class="ticket-top">
+        <span class="ticket-tag tag-dev">Development</span>
+        <span class="ticket-level">⚡ Senior</span>
+      </div>
+      <div class="ticket-title">React App stürzt bei großen Datensätzen ab</div>
+      <div class="ticket-desc">Memory Leak bei virtualisierter Liste — KI hat 3 passende Experten gefunden</div>
+      <div class="ki-badge">✦ KI-Analyse abgeschlossen</div>
+      <div class="ticket-bottom" style="margin-top:8px">
+        <span class="ticket-meta">vor 8 min · Berlin GmbH</span>
+        <span class="ticket-status"><span class="status-dot"></span> 3 Antworten</span>
+      </div>
+    </div>
+    <div class="ticket-card">
+      <div class="ticket-top">
+        <span class="ticket-tag tag-design">Design</span>
+        <span class="ticket-level">☀ Mittel</span>
+      </div>
+      <div class="ticket-title">Landing Page Conversion verbessern</div>
+      <div class="ticket-desc">Mobile-First Redesign, neue Brandfarben, A/B Test vorbereiten</div>
+      <div class="ticket-bottom">
+        <span class="ticket-meta">vor 22 min · Startup München</span>
+        <span class="ticket-status"><span class="status-dot"></span> 5 Antworten</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-label">Ablauf</div>
+  <h2 class="section-title">In 4 Schritten zur Lösung</h2>
+  <p class="section-sub">Von der Problembeschreibung bis zur fertigen Lösung — alles auf einer Plattform.</p>
+  <div class="steps fade-up">
+    <div class="step">
+      <div class="step-num">Schritt 01</div>
+      <div class="step-icon">📝</div>
+      <h3>Ticket anlegen</h3>
+      <p>Beschreib dein Problem kurz — unsere KI analysiert es sofort und befüllt Kategorie, Schwierigkeitsgrad und benötigte Skills automatisch.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">Schritt 02</div>
+      <div class="step-icon">🤖</div>
+      <h3>KI-Matching</h3>
+      <p>Das System benachrichtigt automatisch die passenden Experten. Kein manuelles Suchen — die KI übernimmt das komplett.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">Schritt 03</div>
+      <div class="step-icon">💬</div>
+      <h3>Direkt kommunizieren</h3>
+      <p>Experten melden sich im Ticket. Chat, Dateiupload — alles direkt auf der Plattform. Bezahlung wird privat vereinbart.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">Schritt 04</div>
+      <div class="step-icon">⭐</div>
+      <h3>Bewerten & abschließen</h3>
+      <p>Nach Abschluss bewertest du den Experten. Das verbessert sein Ranking und hilft anderen Firmen bei der Auswahl.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title">Was Solvd kann</h2>
+  <p class="section-sub">Gebaut für Firmen die schnell Hilfe brauchen — und Experten die effizient Aufträge finden wollen.</p>
+  <div class="features-grid fade-up">
+    <div class="feature-card">
+      <div class="feature-icon fi-indigo">🤖</div>
+      <h3>KI-Ticket-Analyse</h3>
+      <p>Einfach das Problem beschreiben — die KI analysiert automatisch: Kategorie, Schwierigkeitsgrad, benötigte Skills und geschätzte Stunden.</p>
+      <span class="feature-new">KI-gestützt</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-teal">🏆</div>
+      <h3>Experten-Ranking</h3>
+      <p>Transparentes Ranking basierend auf Antwortzeit, Bewertungen und Abschlussrate. Für Firmen sofort sichtbar wer am besten ist.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-orange">⚡</div>
+      <h3>Quick Response</h3>
+      <p>Dringendes Problem? Ticket als "Urgent" markieren — Experten mit aktiviertem Quick-Mode werden sofort per Push benachrichtigt.</p>
+      <span class="feature-new">Einzigartig</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-green">📈</div>
+      <h3>Schwierigkeitsgrade</h3>
+      <p>Tickets von Junior bis Expert. Anfänger sammeln Erfahrung bei einfacheren Aufgaben und arbeiten sich systematisch nach oben.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-indigo">💬</div>
+      <h3>Ticket-Chat</h3>
+      <p>Direkte Kommunikation im Ticket. Dateiupload, Screenshots, Code-Snippets — alles an einem Ort, keine externen Tools nötig.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon fi-teal">📚</div>
+      <h3>Lösungs-Bibliothek</h3>
+      <p>Abgeschlossene Tickets werden anonymisiert öffentlich. Firmen sehen: "Dieses Problem wurde bereits gelöst" — mit konkretem Lösungsweg.</p>
+      <span class="feature-new">Einzigartig</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="forwho">
+  <div class="section-label">Für wen</div>
+  <h2 class="section-title">Für Firmen & Experten</h2>
+  <div class="forwho-grid fade-up">
+    <div class="forwho-card">
+      <div class="forwho-emoji">🏢</div>
+      <h3>Für Firmen & Unternehmen</h3>
+      <p>Ihr habt ein Problem und braucht schnell jemanden der es löst — ohne wochenlange Suche.</p>
+      <ul class="forwho-list">
+        <li>Ticket in 2 Minuten anlegen</li>
+        <li>KI analysiert und kategorisiert automatisch</li>
+        <li>Experte meldet sich — nicht umgekehrt</li>
+        <li>Bewertungen für maximale Transparenz</li>
+        <li>Keine Agentur-Gebühren</li>
+      </ul>
+    </div>
+    <div class="forwho-card highlighted">
+      <div class="forwho-emoji">💻</div>
+      <h3>Für Freelancer & Experten</h3>
+      <p>Ihr habt die Skills — Solvd bringt euch die Aufträge, ohne dass ihr selbst akquirieren müsst.</p>
+      <ul class="forwho-list">
+        <li>Passende Tickets automatisch zugeschickt</li>
+        <li>Ranking zeigt eure Stärken</li>
+        <li>Auch als Einsteiger starten möglich</li>
+        <li>Portfolio durch abgeschlossene Tickets</li>
+        <li>Kein Bieten gegen andere — direkte Anfragen</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-label">Preise</div>
+  <h2 class="section-title">Transparent & Fair</h2>
+  <p class="section-sub">Starte komplett kostenlos. Zahle erst wenn du echten Wert siehst.</p>
+  <div class="pricing-grid fade-up">
+    <div class="price-card">
+      <div class="price-plan">Warteliste</div>
+      <div class="price-amount"><sup>€</sup>0</div>
+      <div class="price-free">✦ 2 Monate komplett gratis</div>
+      <ul class="price-list">
+        <li>Früher Zugang beim Launch</li>
+        <li>5 Tickets pro Monat</li>
+        <li>KI-Ticket-Analyse</li>
+        <li>Basis-Ranking sichtbar</li>
+        <li class="off">Quick Response</li>
+        <li class="off">Unbegrenzte Tickets</li>
+      </ul>
+      <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-price btn-price-outline">Jetzt eintragen</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-popular">Beliebteste Wahl</div>
+      <div class="price-plan">Experten Pro</div>
+      <div class="price-amount"><sup>€</sup>15</div>
+      <div class="price-period">pro Monat · jederzeit kündbar</div>
+      <ul class="price-list">
+        <li>Unbegrenzte Tickets</li>
+        <li>KI-Matching & Benachrichtigungen</li>
+        <li>Quick Response Modus</li>
+        <li>Portfolio automatisch aufgebaut</li>
+        <li>Priorität im Ranking</li>
+        <li>Analytics Dashboard</li>
+      </ul>
+      <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-price btn-price-main">Warteliste beitreten →</a>
+    </div>
+    <div class="price-card">
+      <div class="price-plan">Business</div>
+      <div class="price-amount"><sup>€</sup>15</div>
+      <div class="price-period">pro Monat · jederzeit kündbar</div>
+      <ul class="price-list">
+        <li>Unbegrenzte Tickets</li>
+        <li>KI-Analyse & Auto-Fill</li>
+        <li>Urgent-Ticket Markierung</li>
+        <li>Team-Zugang (3 Nutzer)</li>
+        <li>Ausgaben-Tracking</li>
+        <li>Prioritäts-Support</li>
+      </ul>
+      <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-price btn-price-outline">Für Firmen eintragen</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="section-label">FAQ</div>
+  <h2 class="section-title">Häufige Fragen</h2>
+  <div class="faq-grid fade-up">
+    <div class="faq-item">
+      <h4>Wann geht Solvd live?</h4>
+      <p>Wir bauen gerade aktiv an der Plattform. Alle auf der Warteliste werden als erste informiert — voraussichtlich in 6–8 Wochen.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Was kostet es wirklich?</h4>
+      <p>Wartelisten-Nutzer bekommen 2 Monate gratis. Danach 10–15€ pro Monat — jederzeit kündbar, keine versteckten Kosten.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Wie läuft die Bezahlung zwischen Firma und Experte?</h4>
+      <p>Direkt und privat zwischen euch — per PayPal, Überweisung oder wie ihr es vereinbart. Solvd nimmt keine Provision auf eure Deals.</p>
+    </div>
+    <div class="faq-item">
+      <h4>Kann ich als Anfänger mitmachen?</h4>
+      <p>Ja! Das Schwierigkeitsgrad-System ist extra dafür gemacht. Junior-Tickets haben weniger Konkurrenz und helfen dir Erfahrung aufzubauen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Bereit wenn wir launchen?</h2>
+  <p>Trag dich jetzt ein — kostenlos, kein Risiko, kündbar wann du willst.</p>
+  <a href="https://tally.so/r/RGRDxQ" target="_blank" class="btn-cta-white">Jetzt auf Warteliste eintragen →</a>
+  <div class="cta-note">Keine Kreditkarte nötig · 2 Monate gratis für Wartelisten-Nutzer</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Solvd<span>.</span></div>
+  <div class="footer-links">
+    <a href="#">AGB</a>
+    <a href="#">Datenschutz</a>
+    <a href="#">Impressum</a>
+    <a href="#">Kontakt</a>
+  </div>
+  <div class="footer-copy">© 2025 Solvd. Alle Rechte vorbehalten.</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
